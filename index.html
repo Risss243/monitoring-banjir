@@ -1,19 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Monitoring Banjir</title>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <meta charset="UTF-8">
+  <title>Monitoring Banjir - Firebase Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background: #f0f0f0;
+    }
+    h1 {
+      color: #1e88e5;
+    }
+    .card {
+      display: inline-block;
+      background: white;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      min-width: 200px;
+    }
+    .label {
+      font-size: 18px;
+      color: #555;
+    }
+    .value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <h1>📡 Monitoring Banjir</h1>
-  <p><strong>Tinggi Air:</strong> <span id="tinggi_air">--</span> cm</p>
-  <p><strong>Status Hujan:</strong> <span id="status_hujan">--</span></p>
-  <p><strong>Suhu:</strong> <span id="suhu">--</span> °C</p>
+  <h1>📊 Monitoring Banjir</h1>
+  <div class="card">
+    <div class="label">Tinggi Air</div>
+    <div class="value" id="air">-</div>
+  </div>
+  <div class="card">
+    <div class="label">Status Hujan</div>
+    <div class="value" id="hujan">-</div>
+  </div>
+  <div class="card">
+    <div class="label">Suhu</div>
+    <div class="value" id="suhu">-</div>
+  </div>
+  <div class="card">
+    <div class="label">Kondisi</div>
+    <div class="value" id="status">-</div>
+  </div>
 
   <script>
-    // Konfigurasi Firebase dari project kamu
-    var firebaseConfig = {
+    // Konfigurasi Firebase milikmu
+    const firebaseConfig = {
       apiKey: "AIzaSyBMw0ecKQ3S6p7cYaeokdnv8Giq204utkk",
       authDomain: "monitoringbanjir-fd67b.firebaseapp.com",
       databaseURL: "https://monitoringbanjir-fd67b-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -22,17 +65,18 @@
       messagingSenderId: "751491473354",
       appId: "1:751491473354:web:f01fb535c8c3b55d8ab933"
     };
+
+    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    // Referensi ke data Realtime Database
-    var db = firebase.database();
-
-    // Listener real-time untuk data monitoring
-    db.ref("monitoring").on("value", function(snapshot) {
+    // Update nilai dari Firebase ke halaman
+    db.ref().on("value", (snapshot) => {
       const data = snapshot.val();
-      document.getElementById("tinggi_air").innerText = data.tinggi_air || "--";
-      document.getElementById("status_hujan").innerText = data.status_hujan || "--";
-      document.getElementById("suhu").innerText = data.suhu || "--";
+      document.getElementById("air").innerText = data.tinggi_air + " cm";
+      document.getElementById("hujan").innerText = data.status_hujan;
+      document.getElementById("suhu").innerText = data.suhu + "°C";
+      document.getElementById("status").innerText = data.status;
     });
   </script>
 </body>
