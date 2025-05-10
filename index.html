@@ -1,82 +1,100 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Monitoring Banjir - Firebase Dashboard</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monitoring Banjir</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
+      font-family: 'Roboto', sans-serif;
       background: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
     h1 {
-      color: #1e88e5;
+      color: #007bff;
+      margin-top: 30px;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
     }
     .card {
-      display: inline-block;
       background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 20px;
       margin: 10px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      min-width: 200px;
+      width: 150px;
+      transition: transform 0.2s;
     }
-    .label {
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card h3 {
+      margin-bottom: 10px;
       font-size: 18px;
-      color: #555;
     }
-    .value {
-      font-size: 28px;
+    .card p {
+      font-size: 20px;
       font-weight: bold;
-      color: #333;
     }
   </style>
 </head>
 <body>
   <h1>📊 Monitoring Banjir</h1>
-  <div class="card">
-    <div class="label">Tinggi Air</div>
-    <div class="value" id="air">-</div>
+  <div class="container">
+    <div class="card">
+      <h3>Tinggi Air</h3>
+      <p id="tinggiAir">-</p>
+    </div>
+    <div class="card">
+      <h3>Status Hujan</h3>
+      <p id="statusHujan">-</p>
+    </div>
+    <div class="card">
+      <h3>Suhu</h3>
+      <p id="suhu">-</p>
+    </div>
+    <div class="card">
+      <h3>Kondisi</h3>
+      <p id="kondisi">-</p>
+    </div>
   </div>
-  <div class="card">
-    <div class="label">Status Hujan</div>
-    <div class="value" id="hujan">-</div>
-  </div>
-  <div class="card">
-    <div class="label">Suhu</div>
-    <div class="value" id="suhu">-</div>
-  </div>
-  <div class="card">
-    <div class="label">Kondisi</div>
-    <div class="value" id="status">-</div>
-  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
   <script>
-    // Konfigurasi Firebase milikmu
     const firebaseConfig = {
-      apiKey: "AIzaSyBMw0ecKQ3S6p7cYaeokdnv8Giq204utkk",
-      authDomain: "monitoringbanjir-fd67b.firebaseapp.com",
-      databaseURL: "https://monitoringbanjir-fd67b-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "monitoringbanjir-fd67b",
-      storageBucket: "monitoringbanjir-fd67b.appspot.com",
-      messagingSenderId: "751491473354",
-      appId: "1:751491473354:web:f01fb535c8c3b55d8ab933"
+      apiKey: "AIzaSyBrYz8rzcFZtVgr4h5oL6XY7vXGksojAF8",
+      authDomain: "monitoring-banjir-amikom.firebaseapp.com",
+      databaseURL: "https://monitoring-banjir-amikom-default-rtdb.firebaseio.com",
+      projectId: "monitoring-banjir-amikom",
+      storageBucket: "monitoring-banjir-amikom.appspot.com",
+      messagingSenderId: "947588974386",
+      appId: "1:947588974386:web:b2c2dd61b9e07a2c3bfe02"
     };
 
-    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const database = firebase.database();
 
-    // Update nilai dari Firebase ke halaman
-    db.ref().on("value", (snapshot) => {
+    database.ref('/').on('value', (snapshot) => {
       const data = snapshot.val();
-      document.getElementById("air").innerText = data.tinggi_air + " cm";
-      document.getElementById("hujan").innerText = data.status_hujan;
-      document.getElementById("suhu").innerText = data.suhu + "°C";
-      document.getElementById("status").innerText = data.status;
+      document.getElementById("tinggiAir").textContent = data.tinggi_air + " cm";
+      document.getElementById("statusHujan").textContent = data.status_hujan;
+      document.getElementById("suhu").textContent = data.suhu + " °C";
+
+      let kondisi = "AMAN";
+      if (data.tinggi_air > 20) kondisi = "WASPADA";
+      if (data.tinggi_air > 35) kondisi = "BAHAYA";
+      document.getElementById("kondisi").textContent = kondisi;
     });
   </script>
 </body>
