@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Monitoring Banjir</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+  <h1>📡 Monitoring Banjir</h1>
+  <p><strong>Tinggi Air:</strong> <span id="tinggi_air">--</span> cm</p>
+  <p><strong>Status Hujan:</strong> <span id="status_hujan">--</span></p>
+  <p><strong>Suhu:</strong> <span id="suhu">--</span> °C</p>
+
+  <script>
+    // Konfigurasi Firebase dari project kamu
+    var firebaseConfig = {
+      apiKey: "AIzaSyBMw0ecKQ3S6p7cYaeokdnv8Giq204utkk",
+      authDomain: "monitoringbanjir-fd67b.firebaseapp.com",
+      databaseURL: "https://monitoringbanjir-fd67b-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "monitoringbanjir-fd67b",
+      storageBucket: "monitoringbanjir-fd67b.appspot.com",
+      messagingSenderId: "751491473354",
+      appId: "1:751491473354:web:f01fb535c8c3b55d8ab933"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Referensi ke data Realtime Database
+    var db = firebase.database();
+
+    // Listener real-time untuk data monitoring
+    db.ref("monitoring").on("value", function(snapshot) {
+      const data = snapshot.val();
+      document.getElementById("tinggi_air").innerText = data.tinggi_air || "--";
+      document.getElementById("status_hujan").innerText = data.status_hujan || "--";
+      document.getElementById("suhu").innerText = data.suhu || "--";
+    });
+  </script>
+</body>
+</html>
